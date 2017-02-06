@@ -678,10 +678,12 @@ class Media extends X2Model {
             if (count($matches) == 2 && is_numeric($matches[1])) {
 
                 $media = X2Model::model('Media')->findByPk($matches[1]);
+                
                 if (isset($media)) {
-                    $str = Yii::t('media', 'File:') . ' ';
+                    
+                    $str = Yii::t('media', '') . ' ';
 
-                    return self::getImageText($str, $makeLink, $makeImage, $media);
+                    return self::getImageText($str, false, $makeImage, $media);
                 }
             }
         } elseif (preg_match('/^<a target="_blank" href="https:\/\/drive.google.com\/file\/d\/(.+)">.+<\/a>$/i', $str, $matches)) {

@@ -857,10 +857,10 @@ class EventTextFormatter {
                     $text .= $eventTexts[1];   
                 }
                 if (!$truncated) {
-                    $text.="<br><br>" . Media::attachmentSocialText($media->getMediaLink(),
+                    $text.= Media::attachmentSocialText($media->getMediaLink(),
                                     true, true) . "<br>";
                 } else {
-                    $text.="<br><br>" . Media::attachmentSocialText($media->getMediaLink(),
+                    $text.= Media::attachmentSocialText($media->getMediaLink(),
                                     true, false) . "<br>";
                 }
                 $index++;
@@ -871,14 +871,14 @@ class EventTextFormatter {
                 $text .= $eventTexts[1];   
             }
             if (!$truncated) {
-                $text.="<br><br>" . Media::attachmentSocialText($media->getMediaLink(),
+                $text.= Media::attachmentSocialText($media->getMediaLink(),
                                 true, true);
             } else {
-                $text.="<br><br>" . Media::attachmentSocialText($media->getMediaLink(),
+                $text.= Media::attachmentSocialText($media->getMediaLink(),
                                 true, false);
             }
         } else {
-            $text.="<br>Media file not found.";
+            $text.="Media file not found.";
         }
         
         return $text;

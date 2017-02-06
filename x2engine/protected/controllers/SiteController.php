@@ -751,9 +751,8 @@ class SiteController extends x2base {
         $event->user = Yii::app()->user->getName();
         if (isset($_POST['attachmentText']) && !empty($_POST['attachmentText'])) {
             $event->text = $_POST['attachmentText'];
-        } /*else {
-            $event->text = Yii::t('app', 'Attached file: ');
-        }*/
+        }
+        $event->text = "HAAAA";
         $location = Yii::app()->params->profile->user->logLocation('activityPost', 'POST');
         $geoCoords = isset($_POST['geoCoords']) ? CJSON::decode($_POST['geoCoords'], true) : null;
         $isCheckIn = ($geoCoords && (isset($geoCoords['lat']) || isset($geoCoords['locationEnabled'])));

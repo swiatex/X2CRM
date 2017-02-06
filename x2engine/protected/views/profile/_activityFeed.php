@@ -1,5 +1,5 @@
 <?php
-/***********************************************************************************
+/* * *********************************************************************************
  * X2CRM is a customer relationship management program developed by
  * X2Engine, Inc. Copyright (C) 2011-2016 X2Engine Inc.
  * 
@@ -33,153 +33,145 @@
  * X2Engine" logo. If the display of the logo is not reasonably feasible for
  * technical reasons, the Appropriate Legal Notices must display the words
  * "Powered by X2Engine".
- **********************************************************************************/
+ * ******************************************************************************** */
 
 Yii::app()->clientScript->registerScriptFile(
-    Yii::app()->getBaseUrl().'/js/activityFeed.js', CClientScript::POS_END);
+        Yii::app()->getBaseUrl() . '/js/activityFeed.js', CClientScript::POS_END);
 Yii::app()->clientScript->registerScriptFile(
-    Yii::app()->getBaseUrl().'/js/EnlargeableImage.js', CClientScript::POS_END);
+        Yii::app()->getBaseUrl() . '/js/EnlargeableImage.js', CClientScript::POS_END);
 Yii::app()->clientScript->registerScriptFile(
-    Yii::app()->getBaseUrl().'/js/jquery-expander/jquery.expander.js', CClientScript::POS_END);
+        Yii::app()->getBaseUrl() . '/js/jquery-expander/jquery.expander.js', CClientScript::POS_END);
 
 // used for rich editing in new post text field
-Yii::app()->clientScript->registerPackage ('emailEditor');
+Yii::app()->clientScript->registerPackage('emailEditor');
 
 
-Yii::app()->clientScript->registerScriptFile(Yii::app()->getBaseUrl().'/js/multiselect/js/ui.multiselect.js');
-Yii::app()->clientScript->registerScriptFile(Yii::app()->getBaseUrl().'/js/lib/moment-with-locales.min.js');
+Yii::app()->clientScript->registerScriptFile(Yii::app()->getBaseUrl() . '/js/multiselect/js/ui.multiselect.js');
+Yii::app()->clientScript->registerScriptFile(Yii::app()->getBaseUrl() . '/js/lib/moment-with-locales.min.js');
 
 
 $groups = Groups::getUserGroups(Yii::app()->user->getId());
 $tempUserList = array();
-foreach($groups as $groupId){
-    $userLinks = GroupToUser::model()->findAllByAttributes(array('groupId'=>$groupId));
-    foreach($userLinks as $link){
+foreach ($groups as $groupId) {
+    $userLinks = GroupToUser::model()->findAllByAttributes(array('groupId' => $groupId));
+    foreach ($userLinks as $link) {
         $user = User::model()->findByPk($link->userId);
-        if(isset($user)){
+        if (isset($user)) {
             $tempUserList[] = $user->username;
         }
     }
 }
 
 $userList = array_keys(User::getNames());
-$tempUserList = array_diff($userList,$tempUserList);
-$usersGroups = implode(",",$tempUserList);
+$tempUserList = array_diff($userList, $tempUserList);
+$usersGroups = implode(",", $tempUserList);
 
 Yii::app()->clientScript->registerScript('setUpActivityFeedManager', "
 
 x2.activityFeed = new x2.ActivityFeed ({
-    translations: ".CJSON::encode (array (
-        'Unselect All' => Yii::t('app','Unselect All'),
-        'Select All' => Yii::t('app','Select All'),
-        'Uncheck All' => Yii::t('app','Uncheck All'),
-        'Check All' => Yii::t('app','Check All'),
-        'Enter text here...' => Yii::t('app','Enter text here...'),
-        'Broadcast Event' => Yii::t('app','Broadcast Event'),
-        'Make Important' => Yii::t('app','Make Important'),
-        'Broadcast' => Yii::t('app','Broadcast'),
-        'broadcast error message 1' => Yii::t('app','Select at least one user to broadcast to'),
-        'broadcast error message 2' => Yii::t('app','Select at least one broadcast method'),
-        'Okay' => Yii::t('app','Okay'),
-        'Nevermind' => Yii::t('app','Cancel'),
-        'Create' => Yii::t('app','Create'),
-        'Cancel' => Yii::t('app','Cancel'),
-        'Read more' => Yii::t('app','Read') . '&nbsp;' . Yii::t('app', 'More'),
-        'Read less' => Yii::t('app','Read') . '&nbsp;' . Yii::t('app', 'Less'),
-    )).",
-    usersGroups: '".$usersGroups."',
-    minimizeFeed: ".(Yii::app()->params->profile->minimizeFeed==1?'true':'false').",
+    translations: " . CJSON::encode(array(
+            'Unselect All' => Yii::t('app', 'Unselect All'),
+            'Select All' => Yii::t('app', 'Select All'),
+            'Uncheck All' => Yii::t('app', 'Uncheck All'),
+            'Check All' => Yii::t('app', 'Check All'),
+            'Enter text here...' => Yii::t('app', 'Enter text here...'),
+            'Broadcast Event' => Yii::t('app', 'Broadcast Event'),
+            'Make Important' => Yii::t('app', 'Make Important'),
+            'Broadcast' => Yii::t('app', 'Broadcast'),
+            'broadcast error message 1' => Yii::t('app', 'Select at least one user to broadcast to'),
+            'broadcast error message 2' => Yii::t('app', 'Select at least one broadcast method'),
+            'Okay' => Yii::t('app', 'Okay'),
+            'Nevermind' => Yii::t('app', 'Cancel'),
+            'Create' => Yii::t('app', 'Create'),
+            'Cancel' => Yii::t('app', 'Cancel'),
+            'Read more' => Yii::t('app', 'Read') . '&nbsp;' . Yii::t('app', 'More'),
+            'Read less' => Yii::t('app', 'Read') . '&nbsp;' . Yii::t('app', 'Less'),
+        )) . ",
+    usersGroups: '" . $usersGroups . "',
+    minimizeFeed: " . (Yii::app()->params->profile->minimizeFeed == 1 ? 'true' : 'false') . ",
     commentFlag: false,
-    lastEventId: ".(!empty($lastEventId)?$lastEventId:0).",
-    lastTimestamp: ".(!empty($lastTimestamp)?$lastTimestamp:0).",
-    profileId: ".$profileId.",
-    myProfileId: ".Yii::app()->params->profile->id.",
-    deletePostUrl: '".$this->createUrl('/profile/deletePost')."'
+    lastEventId: " . (!empty($lastEventId) ? $lastEventId : 0) . ",
+    lastTimestamp: " . (!empty($lastTimestamp) ? $lastTimestamp : 0) . ",
+    profileId: " . $profileId . ",
+    myProfileId: " . Yii::app()->params->profile->id . ",
+    deletePostUrl: '" . $this->createUrl('/profile/deletePost') . "'
 });
 
 ", CClientScript::POS_END);
 ?>
 
 <div id='activity-feed-container' class='x2-layout-island'>
-<div id='page-title-container'>
-    <div class="page-title icon rounded-top activity-feed x2Activity">
-        <h2><?php echo Yii::t('app','Activity Feed'); ?></h2>
-        <span title='<?php echo Yii::t('app', 'Feed Settings'); ?>'>
-        <?php
-        echo X2Html::settingsButton (Yii::t('app', 'Feed Settings'), 
-            array ('id' => 'activity-feed-settings-button'));
-        ?>
-        </span>
-        <a href='#' id='feed-filters-button' 
-         class='filter-button right'>
-            <span class='fa fa-filter'></span>
-        </a>
-        <div id="menu-links" class="title-bar" style='display: none;'>
-            <?php
-            echo CHtml::link(
-                Yii::t('app','Toggle Comments'),'#',
-                array('id'=>'toggle-all-comments','class'=>'x2-button x2-minimal-button right'));
-            echo CHtml::link(
-                Yii::t('app','Restore Posts'),'#',
-                array('id'=>'restore-posts','style'=>'display:none;',
-                    'class'=>'x2-button x2-minimal-button right'));
-            echo CHtml::link(
-                Yii::t('app','Minimize Posts'),
-                '#',array('id'=>'min-posts','class'=>'x2-button x2-minimal-button right'));
-            ?>
+    <div id='page-title-container'>
+        <div class="page-title icon rounded-top activity-feed x2Activity">
+            <h2><?php echo Yii::t('app', 'Activity Feed'); ?></h2>
+            <span title='<?php echo Yii::t('app', 'Feed Settings'); ?>'>
+                <?php
+                echo X2Html::settingsButton(Yii::t('app', 'Feed Settings'), array('id' => 'activity-feed-settings-button'));
+                ?>
+            </span>
+            <a href='#' id='feed-filters-button' 
+               class='filter-button right'>
+                <span class='fa fa-filter'></span>
+            </a>
+            <div id="menu-links" class="title-bar" style='display: none;'>
+                <?php
+                echo CHtml::link(
+                        Yii::t('app', 'Toggle Comments'), '#', array('id' => 'toggle-all-comments', 'class' => 'x2-button x2-minimal-button right'));
+                echo CHtml::link(
+                        Yii::t('app', 'Restore Posts'), '#', array('id' => 'restore-posts', 'style' => 'display:none;',
+                    'class' => 'x2-button x2-minimal-button right'));
+                echo CHtml::link(
+                        Yii::t('app', 'Minimize Posts'), '#', array('id' => 'min-posts', 'class' => 'x2-button x2-minimal-button right'));
+                ?>
+            </div>
         </div>
     </div>
-</div>
 
-<?php
-$this->renderPartial ('_feedFilters');
-?>
+    <?php
+    $this->renderPartial('_feedFilters');
+    ?>
 
-<div class="form" id="post-form" style="clear:both">
-    <?php $feed=new Events; ?>
-    <?php $form = $this->beginWidget('CActiveForm', array(
-    'id'=>'feed-form',
-    'enableAjaxValidation'=>false,
-    'method'=>'post',
-    )); ?>
-    <div class="float-row" style='overflow:visible;'>
+    <div class="form" id="post-form" style="clear:both">
+        <?php $feed = new Events; ?>
         <?php
-        echo $form->textArea($feed,'text',array('style'=>'width:99%;height:25px;color:#aaa;display:block;clear:both;'));
-        echo "<div id='post-buttons' style='display:none;'>";
-        echo $form->dropDownList($feed,'associationId',$users, 
-            array (
+        $form = $this->beginWidget('CActiveForm', array(
+            'id' => 'feed-form',
+            'enableAjaxValidation' => false,
+            'method' => 'post',
+        ));
+        ?>
+        <div class="float-row" style='overflow:visible;'>
+            <?php
+            echo $form->textArea($feed, 'text', array('style' => 'width:99%;height:25px;color:#aaa;display:block;clear:both;'));
+            echo "<div id='post-buttons' style='display:none;'>";
+            echo $form->dropDownList($feed, 'associationId', $users, array(
                 'style' => ($isMyProfile ? '' : 'display:none;'),
                 'class' => 'x2-select'
-            )
-        );
-        $feed->visibility=1;
-        echo $form->dropDownList($feed,'visibility',
-            array(1=>Yii::t('actions','Public'), 0=>Yii::t('actions','Private')),
-            array ('class' => 'x2-select')
-        );
-        function translateOptions($item){
-            return Yii::t('app',$item);
-        }
-        echo $form->dropDownList($feed,'subtype',
-            array_map(
-                'translateOptions',
-                Dropdowns::getSocialSubtypes ()),
-            array ('class' => 'x2-select'));
-?>
-        <div class="x2-button" title="<?php echo Yii::t('profile', 'Insert Link to Record'); ?>" onclick='$("#feed_link_record").slideToggle()'><?php echo X2Html::fa('chain'); ?></div>
-        <div class="row" id="feed_link_record" style="display:none">
-            <div class="cell"><?php
-                // Model association autocomplete
-                echo $form->hiddenField($feed, 'recordLinks');
-                $modelList = Fields::getDisplayedModelNamesList();
-                echo $form->label($feed, 'associationType'); 
-                echo $form->dropDownList(
-                    $feed, 'associationType', 
-                    array_merge(array('none' => Yii::t('app','None')), $modelList), 
-                    array(
+                    )
+            );
+            $feed->visibility = 1;
+            echo $form->dropDownList($feed, 'visibility', array(1 => Yii::t('actions', 'Public'), 0 => Yii::t('actions', 'Private')), array('class' => 'x2-select')
+            );
+
+            function translateOptions($item) {
+                return Yii::t('app', $item);
+            }
+
+            echo $form->dropDownList($feed, 'subtype', array_map(
+                            'translateOptions', Dropdowns::getSocialSubtypes()), array('class' => 'x2-select'));
+            ?>
+            <div class="x2-button" title="<?php echo Yii::t('profile', 'Insert Link to Record'); ?>" onclick='$("#feed_link_record").slideToggle()'><?php echo X2Html::fa('chain'); ?></div>
+            <div class="row" id="feed_link_record" style="display:none">
+                <div class="cell"><?php
+                    // Model association autocomplete
+                    echo $form->hiddenField($feed, 'recordLinks');
+                    $modelList = Fields::getDisplayedModelNamesList();
+                    echo $form->label($feed, 'associationType');
+                    echo $form->dropDownList(
+                            $feed, 'associationType', array_merge(array('none' => Yii::t('app', 'None')), $modelList), array(
                         'ajax' => array(
                             'type' => 'POST',
-                            'url' => CController::createUrl('/actions/actions/parseType'), 
+                            'url' => CController::createUrl('/actions/actions/parseType'),
                             'update' => '#', //selector to update
                             'success' => 'function(data){
                                 if(data){
@@ -191,25 +183,25 @@ $this->renderPartial ('_feedFilters');
                                 }
                             }'
                         )
-                    )
-                );
-                echo $form->error($feed, 'associationType');
-                ?>
-            </div>
-            <div class="cell" id="feed_auto_complete" 
-             style="display:none;">
-                <?php
-                echo $form->label($feed, 'associationName');
-                $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                    'name' => 'feed_auto_select',
-                    'value' => '',
-                    'source' => '',
-                    'options' => array(
-                        'minLength' => '2',
-                        'select' => 'js:function( event, ui ) {
+                            )
+                    );
+                    echo $form->error($feed, 'associationType');
+                    ?>
+                </div>
+                <div class="cell" id="feed_auto_complete" 
+                     style="display:none;">
+                         <?php
+                         echo $form->label($feed, 'associationName');
+                         $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+                             'name' => 'feed_auto_select',
+                             'value' => '',
+                             'source' => '',
+                             'options' => array(
+                                 'minLength' => '2',
+                                 'select' => 'js:function( event, ui ) {
                             var recordType = $("#Events_associationType").val();
                             $.ajax({
-                                url: "'.$this->createUrl('/actions/actions/getAutocompleteAssocLink').'",
+                                url: "' . $this->createUrl('/actions/actions/getAutocompleteAssocLink') . '",
                                 method: "POST",
                                 data: {
                                     type: recordType,
@@ -234,84 +226,82 @@ $this->renderPartial ('_feedFilters');
                             });
                             return false;
                         }',
-                    ),
-                ));
-                ?>
+                             ),
+                         ));
+                         ?>
+                </div>
+                <div class="cell" id="feed_record_links" style="display:none;"></div>
             </div>
-            <div class="cell" id="feed_record_links" style="display:none;"></div>
-        </div>
 
-        <div id='second-row-buttons-container'>
-            <?php
-            echo CHtml::hiddenField('geoCoords', '');
-            echo CHtml::submitButton(
-                Yii::t('app','Post'),array('class'=>'x2-button','id'=>'save-button'));
+            <div id='second-row-buttons-container'>
+                <?php
+                echo CHtml::hiddenField('geoCoords', '');
+                echo CHtml::submitButton(Yii::t('app', 'Post'), array('class' => 'x2-button', 'id' => 'save-button'));
 
-            if ($isMyProfile) {
-                echo CHtml::button(
-                    Yii::t('app','Attach A File/Photo'),
-                    array(
-                        'class'=>'x2-button',
-                        'onclick'=>"x2.FileUploader.toggle('activity')",
-                        'id'=>"toggle-attachment-menu-button"));
-            } ?>
+                if ($isMyProfile) {
+                    echo CHtml::button(
+                            Yii::t('app', 'Attach A File/Photo'), array(
+                        'class' => 'x2-button',
+                        'onclick' => "x2.FileUploader.toggle('activity')",
+                        'id' => "toggle-attachment-menu-button"));
+                }
+                ?>
 
-            <button id="toggle-location-button" class="x2-button" title="<?php echo Yii::t('app', 'Location Check-In'); ?>" style="display:inline-block; margin-left:10px"><?php
-                echo X2Html::fa('crosshairs fa-lg');
-            ?></button>
-            <button id="toggle-location-comment-button" class="x2-button" title="<?php echo Yii::t('app', 'Add a comment on your location '); ?>" style="display:inline-block"><?php
-                echo X2Html::fa('stack', array(),
-                    X2Html::fa('comment-o fa-stack-2x').
-                    X2Html::fa('crosshairs fa-stack-1x')
-                );
-            ?></button>
-            <?php
-            $checkInPlaceholder = Yii::t('app', 'Check-in comment.');
-            if (!isset($_SERVER['HTTPS']) ?  : '')
-                $checkInPlaceholder .= Yii::t('app', ' Note: for higher accuracy and an embedded static map, visit the site under HTTPS.');
-            ?>
-            <textarea id="checkInComment" rows=2 placeholder="<?php echo $checkInPlaceholder; ?>"></textarea>
-        </div>
+                <button id="toggle-location-button" class="x2-button" title="<?php echo Yii::t('app', 'Location Check-In'); ?>" style="display:inline-block; margin-left:10px"><?php
+                    echo X2Html::fa('crosshairs fa-lg');
+                    ?></button>
+                <button id="toggle-location-comment-button" class="x2-button" title="<?php echo Yii::t('app', 'Add a comment on your location '); ?>" style="display:inline-block"><?php
+                    echo X2Html::fa('stack', array(), X2Html::fa('comment-o fa-stack-2x') .
+                            X2Html::fa('crosshairs fa-stack-1x')
+                    );
+                    ?></button>
+                <?php
+                $checkInPlaceholder = Yii::t('app', 'Check-in comment.');
+                if (!isset($_SERVER['HTTPS']) ?: '')
+                    $checkInPlaceholder .= Yii::t('app', ' Note: for higher accuracy and an embedded static map, visit the site under HTTPS.');
+                ?>
+                <textarea id="checkInComment" rows=2 placeholder="<?php echo $checkInPlaceholder; ?>"></textarea>
+            </div>
         </div>
         <?php
-            Yii::app()->clientScript->registerGeolocationScript(true);
-            Yii::app()->clientScript->registerCheckinScript("#feed-form input[type=\'submit\'", true);
+        Yii::app()->clientScript->registerGeolocationScript(true);
+        Yii::app()->clientScript->registerCheckinScript("#feed-form input[type=\'submit\'", true);
         ?>
     </div>
     <?php $this->endWidget(); ?>
 </div>
 <?php
 if ($isMyProfile) {
-    $this->widget ('FileUploader',array(
+    $this->widget('FileUploader', array(
         'id' => 'activity',
         'url' => '/site/upload',
         'mediaParams' => array(
-            'profileId' => $profileId, 
+            'profileId' => $profileId,
             'associationType' => 'feed',
             'associationId' => Yii::app()->user->getId(),
         ),
-        'viewParams' => array (
+        'viewParams' => array(
             'showButton' => false
         )
     ));
 }
 $this->widget('zii.widgets.CListView', array(
-    'dataProvider'=>$stickyDataProvider,
-    'itemView'=>'_viewEvent',
-    'viewData' => array (
+    'dataProvider' => $stickyDataProvider,
+    'itemView' => '_viewEvent',
+    'viewData' => array(
         'profileId' => $profileId
     ),
-    'id'=>'sticky-feed',
-    'htmlOptions' => array (
+    'id' => 'sticky-feed',
+    'htmlOptions' => array(
         'style' => $stickyDataProvider->itemCount === 0 ? 'display: none;' : '',
     ),
     'pager' => array(
         'class' => 'ext.infiniteScroll.IasPager',
-        'rowSelector'=>'.view.top-level',
+        'rowSelector' => '.view.top-level',
         'listViewId' => 'sticky-feed',
         'header' => '',
-        'options'=>array(
-            'onRenderComplete'=>'js:function(){
+        'options' => array(
+            'onRenderComplete' => 'js:function(){
                 x2.activityFeed.makePostsExpandable ();
                 if(x2.activityFeed.minimizeFeed){
                     x2.activityFeed.minimizePosts();
@@ -322,23 +312,23 @@ $this->widget('zii.widgets.CListView', array(
             }'
         ),
     ),
-    'baseScriptUrl'=>Yii::app()->request->baseUrl.'/themes/'.Yii::app()->theme->name.'/css/listview',
-    'template'=>'{pager} {items}'
+    'baseScriptUrl' => Yii::app()->request->baseUrl . '/themes/' . Yii::app()->theme->name . '/css/listview',
+    'template' => '{pager} {items}'
 ));
 $this->widget('zii.widgets.CListView', array(
-    'dataProvider'=>$dataProvider,
-    'itemView'=>'_viewEvent',
-    'viewData' => array (
+    'dataProvider' => $dataProvider,
+    'itemView' => '_viewEvent',
+    'viewData' => array(
         'profileId' => $profileId
     ),
-    'id'=>'activity-feed',
+    'id' => 'activity-feed',
     'pager' => array(
         'class' => 'ext.infiniteScroll.IasPager',
-        'rowSelector'=>'.view.top-level',
+        'rowSelector' => '.view.top-level',
         'listViewId' => 'activity-feed',
         'header' => '',
-        'options'=>array(
-            'onRenderComplete'=>'js:function(){
+        'options' => array(
+            'onRenderComplete' => 'js:function(){
                 x2.activityFeed.makePostsExpandable ();
                 if(x2.activityFeed.minimizeFeed){
                     x2.activityFeed.minimizePosts();
@@ -354,33 +344,32 @@ $this->widget('zii.widgets.CListView', array(
             }'
         ),
     ),
-    'baseScriptUrl'=>Yii::app()->request->baseUrl.'/themes/'.Yii::app()->theme->name.'/css/listview',
-    'template'=>'{pager} {items}',
+    'baseScriptUrl' => Yii::app()->request->baseUrl . '/themes/' . Yii::app()->theme->name . '/css/listview',
+    'template' => '{pager} {items}',
 ));
-
 ?>
 <div id="make-important-dialog" style="display: none;">
     <div class='dialog-explanation'>
-        <?php echo Yii::t('app','Leave colors blank for defaults.');?>
+        <?php echo Yii::t('app', 'Leave colors blank for defaults.'); ?>
     </div>
     <div>
         <?php
-            echo CHtml::label(Yii::t('app','What color should the event be?'),'broadcastColor');
+        echo CHtml::label(Yii::t('app', 'What color should the event be?'), 'broadcastColor');
         ?>
         <div class='row'>
-            <?php echo CHtml::textField('broadcastColor',''); ?>
+            <?php echo CHtml::textField('broadcastColor', ''); ?>
         </div>
     </div>
     <div>
-        <?php echo CHtml::label(Yii::t('app','What color should the font be?'),'fontColor'); ?>
-            <div class='row'>
-        <?php echo CHtml::textField('fontColor',''); ?>
-        </div>
-    </div>
-    <div>
-        <?php echo CHtml::label(Yii::t('app','What color should the links be?'),'linkColor'); ?>
+        <?php echo CHtml::label(Yii::t('app', 'What color should the font be?'), 'fontColor'); ?>
         <div class='row'>
-            <?php echo CHtml::textField('linkColor',''); ?>
+            <?php echo CHtml::textField('fontColor', ''); ?>
+        </div>
+    </div>
+    <div>
+        <?php echo CHtml::label(Yii::t('app', 'What color should the links be?'), 'linkColor'); ?>
+        <div class='row'>
+            <?php echo CHtml::textField('linkColor', ''); ?>
         </div>
     </div>
 </div>
@@ -390,15 +379,15 @@ $this->widget('zii.widgets.CListView', array(
     </div>
     <select id='broadcast-dialog-user-select' class='multiselect' multiple='multiple' size='6'>
         <?php foreach ($userModels as $user) { ?>
-        <option value="<?php echo $user->id; ?>"> <?php echo $user->firstName . ' ' . $user->lastName; ?> </option>
+            <option value="<?php echo $user->id; ?>"> <?php echo $user->firstName . ' ' . $user->lastName; ?> </option>
         <?php } ?>
     </select>
     <div>
-        <?php echo CHtml::label(Yii::t('app','Do you want to email selected users?'),'email-users'); ?>
+        <?php echo CHtml::label(Yii::t('app', 'Do you want to email selected users?'), 'email-users'); ?>
         <?php echo CHtml::checkBox('email-users'); ?>
     </div>
     <div id='notify-users-checkbox-container'>
-        <?php echo CHtml::label(Yii::t('app','Do you want to notify selected users?'),'notify-users'); ?>
+        <?php echo CHtml::label(Yii::t('app', 'Do you want to notify selected users?'), 'notify-users'); ?>
         <?php echo CHtml::checkBox('notify-users'); ?>
     </div>
 </div>
