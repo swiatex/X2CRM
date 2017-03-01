@@ -1,7 +1,7 @@
 <?php return array (
   'Revenue' => 'Dochód',
   'Symbol' => 'Symbol',
-  'Employees' => 'Zatrudnienie',
+  'Employees' => 'Pracownicy',
   'Parent' => 'Dominująca',
   'Account Record' => 'Rekord konto',
   'Campaign Form' => 'Forma kampanii',
